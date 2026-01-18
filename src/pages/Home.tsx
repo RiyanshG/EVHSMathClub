@@ -11,11 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Calendar, Users, BookOpen, Trophy, ExternalLink, Info } from "lucide-react";
 
-// --- ADD THESE TWO LINES ---
 import 'katex/dist/katex.min.css';
-import Latex from "react-latex-next";
-// --------------------------
-
+// Keeping the import even though we aren't rendering Latex right now, 
+// in case you add a Latex problem back later.
+import Latex from "react-latex-next"; 
 
 /**
  * Lightweight, self-contained Matter.js canvas used in the hero's animation area.
@@ -191,7 +190,7 @@ const Home = () => {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-10"></div>
 
-        {/* BACKGROUND GLOWS (Safari-safe: wrapped & clipped) */}
+        {/* BACKGROUND GLOWS */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Glow 1 */}
           <div className="absolute top-20 left-20">
@@ -210,7 +209,7 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Glow 3 (shifted a bit left) */}
+          {/* Glow 3 */}
           <div className="absolute top-1/2 left-[46%] -translate-x-1/2 -translate-y-1/2">
             <div className="w-[600px] h-[600px] rounded-full overflow-hidden">
               <div
@@ -280,13 +279,12 @@ const Home = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Nov. 4
+                Feb. 3
               </div>
               <p className="text-xs text-muted-foreground">Room B109 @ Lunch</p>
             </CardContent>
           </Card>
 
-          {/* Members card (was "Active Members") */}
           <Card className="bg-gradient-card border-border/50 hover:shadow-glow-cyan hover:border-cyan-500/30 transition-all duration-300 group">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -313,9 +311,9 @@ const Home = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold bg-gradient-secondary bg-clip-text text-transparent">
-                AMC 10/12 A
+                AIME II
               </div>
-              <p className="text-xs text-muted-foreground">November 5</p>
+              <p className="text-xs text-muted-foreground">February 11</p>
             </CardContent>
           </Card>
 
@@ -338,7 +336,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* --- NEW ANNOUNCEMENTS SECTION --- */}
+      {/* Announcements Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="bg-gradient-card border border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-300 hover:shadow-glow-cyan">
           <CardHeader>
@@ -355,17 +353,19 @@ const Home = () => {
           <CardContent className="prose prose-invert max-w-none text-muted-foreground">
             <div className="bg-card/50 p-4 rounded-lg border border-border/50 space-y-2">
               <h4 className="font-semibold text-lg text-foreground">
-                USAMTS Round 2
+                EVMT Problem Writing
               </h4>
               <p>
-                Don't forget! The deadline for <strong>USAMTS Round 2</strong> submissions is 
-                <strong> December 1st</strong>.
+                We are currently organizing this year's <strong>Evergreen Valley Math Tournament</strong>.
+                If you are interested in helping write problems, please contact any of the officers or email{" "}
+                <a href="mailto:mathclub.evhs@gmail.com" className="text-cyan-400 hover:underline">
+                  mathclub.evhs@gmail.com
+                </a>.
               </p>
             </div>
           </CardContent>
         </Card>
       </section>
-      {/* ------------------------------- */}
 
       {/* Problem of the Month */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -387,19 +387,13 @@ const Home = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="prose prose-invert max-w-none text-muted-foreground space-y-6">
-            
-            {/* Wrap the string in <Latex>
-              The library will find the $...$ delimiters and render them.
-            */}
             <p className="text-lg">
-              <Latex>
-                {'Kite $EVHS$ has three obtuse angles, one of which is $\\angle SEV = 150^\\circ$. Line $l$ intersects $\\overline{VH}$ and $\\overline{SH}$ at $P$ and $Q$ respectively, with the property that $4\\angle PQH + 3\\angle VHS = 360^\\circ$. If line $l$ intersects $\\overline{EH}$ at $R$, and $\\frac{VE}{EH} = \\frac{PR}{RH}$, find $\\angle HPQ$.'}
-              </Latex>
+              The problem for this month is available directly on the submission form. Please click the button below to view the problem and submit your solution.
             </p>
-            
+
             <div className="not-prose flex">
               <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSe7141U40pU4j8iR2rZ-kkKKvGy9K91j35YLusjZ6hd-js0eQ/viewform"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSfNMjiDu5dM8ljN_5s0oBPKvvAm7OLSYUKVybioVXR8O9mUhg/viewform"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -407,7 +401,7 @@ const Home = () => {
                   size="lg"
                   className="bg-gradient-secondary hover:shadow-glow-orange transition-all duration-300 text-white font-semibold px-8 py-4 text-lg"
                 >
-                  Submit Your Solution
+                  View Problem & Submit
                   <ExternalLink className="ml-2 h-5 w-5" />
                 </Button>
               </a>
