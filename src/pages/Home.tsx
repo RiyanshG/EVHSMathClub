@@ -279,7 +279,7 @@ const Home = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Feb. 3
+                March 3
               </div>
               <p className="text-xs text-muted-foreground">Room B109 @ Lunch</p>
             </CardContent>
@@ -311,9 +311,9 @@ const Home = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold bg-gradient-secondary bg-clip-text text-transparent">
-                AIME II
+                SMT Online
               </div>
-              <p className="text-xs text-muted-foreground">February 11</p>
+              <p className="text-xs text-muted-foreground">April 18</p>
             </CardContent>
           </Card>
 
@@ -350,7 +350,7 @@ const Home = () => {
               Important dates and deadlines.
             </CardDescription>
           </CardHeader>
-          <CardContent className="prose prose-invert max-w-none text-muted-foreground">
+          <CardContent className="prose prose-invert max-w-none text-muted-foreground space-y-4">
             <div className="bg-card/50 p-4 rounded-lg border border-border/50 space-y-2">
               <h4 className="font-semibold text-lg text-foreground">
                 EVMT Problem Writing
@@ -361,6 +361,33 @@ const Home = () => {
                 <a href="mailto:mathclub.evhs@gmail.com" className="text-cyan-400 hover:underline">
                   mathclub.evhs@gmail.com
                 </a>.
+              </p>
+            </div>
+
+            <div className="bg-card/50 p-4 rounded-lg border border-border/50 space-y-2">
+              <h4 className="font-semibold text-lg text-foreground">
+                Officer Elections Coming Soon
+              </h4>
+              <p>
+                Officer elections are approaching soon. If you are in{" "}
+                <strong>9th, 10th, or 11th grade</strong> and have been an active club member (attended at least half of meetings and at least one event/competition), apply using the document below and share it with{" "}
+                <a href="mailto:mathclub.evhs@gmail.com" className="text-cyan-400 hover:underline">
+                  mathclub.evhs@gmail.com
+                </a>.
+              </p>
+              <p>
+                Application document:{" "}
+                <a
+                  href="https://docs.google.com/document/d/1OA2LgtknaKW2OIKhWJQdXjKyl9GCqcy50h4b57pi9Mo/edit?tab=t.0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-cyan-400 hover:underline"
+                >
+                  2026-2027 Math Club Officer Application
+                </a>
+              </p>
+              <p>
+                Deadline: <strong>Sunday, March 1, 2026</strong>. Applicants will give a 1-minute speech at the next meeting on <strong>Tuesday, March 3</strong>, followed by club voting.
               </p>
             </div>
           </CardContent>
@@ -379,7 +406,7 @@ const Home = () => {
                 variant="secondary"
                 className="bg-accent/20 text-accent border-accent/30 hover:bg-accent/30 transition-colors duration-300"
               >
-                October 2025
+                February 2026
               </Badge>
             </div>
             <CardDescription>
@@ -393,7 +420,7 @@ const Home = () => {
 
             <div className="not-prose flex">
               <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSfNMjiDu5dM8ljN_5s0oBPKvvAm7OLSYUKVybioVXR8O9mUhg/viewform"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdPSxAoWVvvqirhAAi6QSGKajmr7ZocT4oc1bL5AOnQKniJ8Q/viewform?usp=header"
                 target="_blank"
                 rel="noopener noreferrer"
               >
