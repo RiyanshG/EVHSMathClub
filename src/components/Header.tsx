@@ -13,6 +13,7 @@ const Header = () => {
     { name: "Officers", href: "/officers" },
     { name: "Resources", href: "/resources" },
     { name: "Archive", href: "/archive" },
+    { name: "EVMT", href: "/evmt" },
   ];
 
   const isActivePage = (href: string) => {

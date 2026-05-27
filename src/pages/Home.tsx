@@ -3,13 +3,11 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Calendar, Users, BookOpen, Trophy, ExternalLink, Info } from "lucide-react";
+import { Calendar, Users, BookOpen, Trophy, ExternalLink } from "lucide-react";
 
 import 'katex/dist/katex.min.css';
 // Keeping the import even though we aren't rendering Latex right now, 
@@ -279,7 +277,7 @@ const Home = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                March 3
+                Next year!
               </div>
               <p className="text-xs text-muted-foreground">Room B109 @ Lunch</p>
             </CardContent>
@@ -311,9 +309,9 @@ const Home = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold bg-gradient-secondary bg-clip-text text-transparent">
-                SMT Online
+                TBD
               </div>
-              <p className="text-xs text-muted-foreground">April 18</p>
+              <p className="text-xs text-muted-foreground">Next year!</p>
             </CardContent>
           </Card>
 
@@ -334,107 +332,6 @@ const Home = () => {
             </CardContent>
           </Card>
         </div>
-      </section>
-
-      {/* Announcements Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card className="bg-gradient-card border border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-300 hover:shadow-glow-cyan">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-cyan-500 bg-clip-text text-transparent">
-                Announcements
-              </CardTitle>
-              <Info className="h-6 w-6 text-cyan-500" />
-            </div>
-            <CardDescription>
-              Important dates and deadlines.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="prose prose-invert max-w-none text-muted-foreground space-y-4">
-            <div className="bg-card/50 p-4 rounded-lg border border-border/50 space-y-2">
-              <h4 className="font-semibold text-lg text-foreground">
-                EVMT Problem Writing
-              </h4>
-              <p>
-                We are currently organizing this year's <strong>Evergreen Valley Math Tournament</strong>.
-                If you are interested in helping write problems, please contact any of the officers or email{" "}
-                <a href="mailto:mathclub.evhs@gmail.com" className="text-cyan-400 hover:underline">
-                  mathclub.evhs@gmail.com
-                </a>.
-              </p>
-            </div>
-
-            <div className="bg-card/50 p-4 rounded-lg border border-border/50 space-y-2">
-              <h4 className="font-semibold text-lg text-foreground">
-                Officer Elections Coming Soon
-              </h4>
-              <p>
-                Officer elections are approaching soon. If you are in{" "}
-                <strong>9th, 10th, or 11th grade</strong> and have been an active club member (attended at least half of meetings and at least one event/competition), apply using the document below and share it with{" "}
-                <a href="mailto:mathclub.evhs@gmail.com" className="text-cyan-400 hover:underline">
-                  mathclub.evhs@gmail.com
-                </a>.
-              </p>
-              <p>
-                Application document:{" "}
-                <a
-                  href="https://docs.google.com/document/d/1OA2LgtknaKW2OIKhWJQdXjKyl9GCqcy50h4b57pi9Mo/edit?tab=t.0"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-400 hover:underline"
-                >
-                  2026-2027 Math Club Officer Application
-                </a>
-              </p>
-              <p>
-                Deadline: <strong>Sunday, March 1, 2026</strong>. Applicants will give a 1-minute speech at the next meeting on <strong>Tuesday, March 3</strong>, followed by club voting.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* Problem of the Month */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card className="bg-gradient-card border border-accent/20 hover:border-accent/40 transition-all duration-300 hover:shadow-glow-orange">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-3xl font-bold bg-gradient-secondary bg-clip-text text-transparent">
-                Problem of the Month
-              </CardTitle>
-              <Badge
-                variant="secondary"
-                className="bg-accent/20 text-accent border-accent/30 hover:bg-accent/30 transition-colors duration-300"
-              >
-                February 2026
-              </Badge>
-            </div>
-            <CardDescription>
-              Submit your solution for a chance to be featured!
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="prose prose-invert max-w-none text-muted-foreground space-y-6">
-            <p className="text-lg">
-              The problem for this month is available directly on the submission form. Please click the button below to view the problem and submit your solution.
-            </p>
-
-            <div className="not-prose flex">
-              <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSdPSxAoWVvvqirhAAi6QSGKajmr7ZocT4oc1bL5AOnQKniJ8Q/viewform?usp=header"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button
-                  size="lg"
-                  className="bg-gradient-secondary hover:shadow-glow-orange transition-all duration-300 text-white font-semibold px-8 py-4 text-lg"
-                >
-                  View Problem & Submit
-                  <ExternalLink className="ml-2 h-5 w-5" />
-                </Button>
-              </a>
-            </div>
-          </CardContent>
-        </Card>
       </section>
 
       {/* Connect Section */}
