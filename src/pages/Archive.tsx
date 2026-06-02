@@ -8,6 +8,20 @@ const Archive = () => {
   // Section 1: Data for Evergreen Valley Math Tournament (EVMT)
   const evmtTournaments = [
     {
+      year: "2026",
+      divisions: [
+        { name: "Division 1", problemsLink: "https://placeholder.example.com/evmt-2026-div1-problems", solutionsLink: "https://placeholder.example.com/evmt-2026-div1-solutions" },
+        { name: "Division 2", problemsLink: "https://placeholder.example.com/evmt-2026-div2-problems", solutionsLink: "https://placeholder.example.com/evmt-2026-div2-solutions" },
+      ]
+    },
+    {
+      year: "2025",
+      divisions: [
+        { name: "Division 1", problemsLink: "https://placeholder.example.com/evmt-2025-div1-problems", solutionsLink: "https://placeholder.example.com/evmt-2025-div1-solutions" },
+        { name: "Division 2", problemsLink: "https://placeholder.example.com/evmt-2025-div2-problems", solutionsLink: "https://placeholder.example.com/evmt-2025-div2-solutions" },
+      ]
+    },
+    {
       year: "2024",
       divisions: [
         { name: "Division 1", problemsLink: "https://drive.google.com/file/d/1D3tysyXrFxxJX8OeZGlF7c5uLEWIUmLl/view?usp=sharing", solutionsLink: "https://drive.google.com/file/d/1VauQLqJzQfgJLLFcZSj4pV0YSgrMqquA/view?usp=sharing" },
