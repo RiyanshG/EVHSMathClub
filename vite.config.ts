@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "0.0.0.0", // Forces IPv4 to fix the loading hang
     port: 8080,
+    allowedHosts: true, // Allow all hosts to prevent blocked request errors
   },
   plugins: [
     react(),
