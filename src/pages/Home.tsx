@@ -204,31 +204,61 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
         });
       };
 
-      // Mouse/touch event handlers
+      // Pointer/touch event handlers with proper coordinate mapping
+      // Account for CSS size vs canvas internal size scaling
       const getCanvasCoords = (clientX: number, clientY: number) => {
         if (!render.canvas) return { x: -1000, y: -1000 };
         const canvasRect = render.canvas.getBoundingClientRect();
+        // Map from CSS pixel space to canvas logical space
+        const scaleX = render.options.width / canvasRect.width;
+        const scaleY = render.options.height / canvasRect.height;
         return {
-          x: clientX - canvasRect.left,
-          y: clientY - canvasRect.top,
+          x: (clientX - canvasRect.left) * scaleX,
+          y: (clientY - canvasRect.top) * scaleY,
         };
       };
 
-      const handleMouseMove = (e: MouseEvent) => {
+      // Track if last interaction was touch to prevent ghost clicks
+      let lastTouchTime = 0;
+
+      // --- Pointer Events (unified mouse + touch on supported browsers) ---
+      const handlePointerMove = (e: PointerEvent) => {
         if (disabledRef.current) return;
         mousePos = getCanvasCoords(e.clientX, e.clientY);
       };
 
-      const handleMouseLeave = () => {
+      const handlePointerLeave = () => {
         mousePos = { x: -1000, y: -1000 };
       };
 
+      const handlePointerDown = (e: PointerEvent) => {
+        if (disabledRef.current) return;
+        // For touch, track time to prevent duplicate click
+        if (e.pointerType === "touch") {
+          lastTouchTime = Date.now();
+        }
+        const coords = getCanvasCoords(e.clientX, e.clientY);
+        mousePos = coords;
+        triggerExplosion(coords.x, coords.y);
+      };
+
+      const handlePointerUp = (e: PointerEvent) => {
+        // Reset mouse position when pointer is released (especially for touch)
+        if (e.pointerType === "touch") {
+          mousePos = { x: -1000, y: -1000 };
+        }
+      };
+
+      // --- Fallback click handler (filtered to avoid double-fire after touch) ---
       const handleClick = (e: MouseEvent) => {
         if (disabledRef.current) return;
+        // Skip if this click is a ghost click following a touch event
+        if (Date.now() - lastTouchTime < 500) return;
         const coords = getCanvasCoords(e.clientX, e.clientY);
         triggerExplosion(coords.x, coords.y);
       };
 
+      // --- Touch-specific handlers for browsers with limited pointer event support ---
       const handleTouchMove = (e: TouchEvent) => {
         if (disabledRef.current) return;
         if (e.touches.length > 0) {
@@ -242,6 +272,7 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
 
       const handleTouchStart = (e: TouchEvent) => {
         if (disabledRef.current) return;
+        lastTouchTime = Date.now();
         if (e.touches.length > 0) {
           const coords = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
           mousePos = coords;
@@ -249,13 +280,26 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
         }
       };
 
-      // Attach event listeners to the canvas
-      render.canvas.addEventListener("mousemove", handleMouseMove);
-      render.canvas.addEventListener("mouseleave", handleMouseLeave);
-      render.canvas.addEventListener("click", handleClick);
-      render.canvas.addEventListener("touchmove", handleTouchMove, { passive: true });
-      render.canvas.addEventListener("touchend", handleTouchEnd);
-      render.canvas.addEventListener("touchstart", handleTouchStart, { passive: true });
+      // Attach event listeners - use pointer events as primary, with touch fallbacks
+      const canvas = render.canvas;
+      
+      // Pointer events (modern browsers, including mobile)
+      canvas.addEventListener("pointermove", handlePointerMove);
+      canvas.addEventListener("pointerleave", handlePointerLeave);
+      canvas.addEventListener("pointerdown", handlePointerDown);
+      canvas.addEventListener("pointerup", handlePointerUp);
+      canvas.addEventListener("pointercancel", handlePointerLeave);
+      
+      // Click fallback for mouse (filtered to avoid double-fire)
+      canvas.addEventListener("click", handleClick);
+      
+      // Touch fallbacks for older browsers
+      canvas.addEventListener("touchmove", handleTouchMove, { passive: true });
+      canvas.addEventListener("touchend", handleTouchEnd);
+      canvas.addEventListener("touchstart", handleTouchStart, { passive: true });
+      
+      // Ensure touch-action allows our handlers to work
+      canvas.style.touchAction = "none";
 
       const resize = () => {
         if (!mountRef.current) return;
@@ -289,12 +333,17 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
       return () => {
         window.removeEventListener("resize", resize);
         if (timerRef.current) window.clearInterval(timerRef.current);
-        render.canvas.removeEventListener("mousemove", handleMouseMove);
-        render.canvas.removeEventListener("mouseleave", handleMouseLeave);
-        render.canvas.removeEventListener("click", handleClick);
-        render.canvas.removeEventListener("touchmove", handleTouchMove);
-        render.canvas.removeEventListener("touchend", handleTouchEnd);
-        render.canvas.removeEventListener("touchstart", handleTouchStart);
+        // Remove pointer events
+        canvas.removeEventListener("pointermove", handlePointerMove);
+        canvas.removeEventListener("pointerleave", handlePointerLeave);
+        canvas.removeEventListener("pointerdown", handlePointerDown);
+        canvas.removeEventListener("pointerup", handlePointerUp);
+        canvas.removeEventListener("pointercancel", handlePointerLeave);
+        canvas.removeEventListener("click", handleClick);
+        // Remove touch fallbacks
+        canvas.removeEventListener("touchmove", handleTouchMove);
+        canvas.removeEventListener("touchend", handleTouchEnd);
+        canvas.removeEventListener("touchstart", handleTouchStart);
         try {
           Runner.stop(runner);
           Render.stop(render);
