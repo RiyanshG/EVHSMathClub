@@ -105,13 +105,14 @@ export default {
 				'gradient-card': 'var(--gradient-card)',
 				'gradient-border': 'var(--gradient-border)',
 			},
-			boxShadow: {
-				'glow-purple': 'var(--shadow-glow-purple)',
-				'glow-cyan': 'var(--shadow-glow-cyan)',
-				'glow-orange': 'var(--shadow-glow-orange)',
-				'card': 'var(--shadow-card)',
-				'hover': 'var(--shadow-hover)',
-			},
+boxShadow: {
+					'glow-purple': 'var(--shadow-glow-purple)',
+					'glow-cyan': 'var(--shadow-glow-cyan)',
+					'glow-orange': 'var(--shadow-glow-orange)',
+					'glow-green': 'var(--shadow-glow-green)',
+					'card': 'var(--shadow-card)',
+					'hover': 'var(--shadow-hover)',
+				},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',

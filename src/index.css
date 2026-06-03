@@ -81,6 +81,7 @@ All colors MUST be HSL.
     --shadow-glow-purple: 0 0 40px rgba(139, 92, 246, 0.3);
     --shadow-glow-cyan: 0 0 40px rgba(34, 211, 238, 0.3);
     --shadow-glow-orange: 0 0 40px rgba(251, 146, 60, 0.3);
+    --shadow-glow-green: 0 0 40px rgba(52, 211, 153, 0.3);
     
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
