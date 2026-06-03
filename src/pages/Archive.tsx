@@ -10,8 +10,20 @@ const Archive = () => {
     {
       year: "2026",
       divisions: [
-        { name: "Division 1", problemsLink: "https://placeholder.example.com/evmt-2026-div1-problems", solutionsLink: "https://placeholder.example.com/evmt-2026-div1-solutions" },
-        { name: "Division 2", problemsLink: "https://placeholder.example.com/evmt-2026-div2-problems", solutionsLink: "https://placeholder.example.com/evmt-2026-div2-solutions" },
+        { 
+          name: "Division 1", 
+          problemsLink: "https://placeholder.example.com/evmt-2026-div1-problems", 
+          solutionsLink: "https://placeholder.example.com/evmt-2026-div1-solutions",
+          solutionsPlaceholder: true,
+          guideLink: "https://drive.google.com/file/d/198f-uQVxPbCYH2cCDmfQAosQGJbrHL_a/view?usp=sharing"
+        },
+        { 
+          name: "Division 2", 
+          problemsLink: "https://placeholder.example.com/evmt-2026-div2-problems", 
+          solutionsLink: "https://placeholder.example.com/evmt-2026-div2-solutions",
+          solutionsPlaceholder: true,
+          guideLink: "https://drive.google.com/file/d/15tDMFhQlrXMdlr9p9mip_kwdqhzB0tuT/view?usp=sharing"
+        },
       ]
     },
     {
