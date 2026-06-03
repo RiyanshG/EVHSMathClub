@@ -315,7 +315,7 @@ const Home = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-card border-border/50 hover:shadow-glow-purple hover:border-emerald-400/30 transition-all duration-300 group">
+          <Card className="bg-gradient-card border-border/50 hover:shadow-glow-green hover:border-emerald-400/30 transition-all duration-300 group">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Resources
