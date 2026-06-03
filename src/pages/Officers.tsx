@@ -2,42 +2,42 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const Officers = () => {
-  // Data for the current 2025-2026 officers (placeholder)
+  // Data for the current 2026-2027 officers
   const officers = [
     {
-      name: "Pranshu Sharma",
-      role: "President",
-      year: "Senior",
-      bio: "Hi! I'm Pranshu Sharma and I'm excited to be your Math Club co-president this year! I like logical things like math and linguistics.",
-      funFact: "A fun fact about me is that I don't have a phone.",
-    },
-    {
-      name: "Saanvi Kotha",
-      role: "President",
-      year: "Senior",
-      bio: "Hi Math Club, I'm Saanvi! I'm a senior at EV and I will be your co-president for this year. I can't wait to do fun activities like countdown and Integration Bee with you guys.",
-      funFact: "I like to read and go on walks in my neighborhood.",
-    },
-    {
-      name: "Yash Pattekar",
-      role: "Vice President",
-      year: "Senior",
-      bio: "Hey guys! I'm Yash Pattekar and I'll be your Math Club Vice President this year. I'm excited to talk to yall about math and other fun things.",
-      funFact: "I can do a bar muscle up.",
-    },
-    {
       name: "Alivia Cui",
+      role: "President",
+      year: "Junior",
+      bio: "Bio coming soon.",
+      funFact: "Fun fact coming soon.",
+    },
+    {
+      name: "Anish Muralikrishnan",
+      role: "Vice President",
+      year: "Sophomore",
+      bio: "Bio coming soon.",
+      funFact: "Fun fact coming soon.",
+    },
+    {
+      name: "Riyansh Goyal",
+      role: "Event Coordinator",
+      year: "Sophomore",
+      bio: "Bio coming soon.",
+      funFact: "Fun fact coming soon.",
+    },
+    {
+      name: "Sparsh Gupta",
+      role: "Secretary",
+      year: "Junior",
+      bio: "Bio coming soon.",
+      funFact: "Fun fact coming soon.",
+    },
+    {
+      name: "Ian Kweon",
       role: "Treasurer",
       year: "Sophomore",
-      bio: "Hii guys! My name is Alivia. I'm a sophomore, and I'll be your treasurer for this year! I'm really looking forward to working with everyone and expanding the club :D",
-      funFact: "Some of my hobbies include running and reading.",
-    },
-    {
-      name: "Andy Xing",
-      role: "Secretary",
-      year: "Senior",
-      bio: "Hi! I'm Andy Xing, your math club secretary for this year. I enjoy solving and writing math problems. I can't wait to help math club shine and bring people together.",
-      funFact: "My favorite color is blue.",
+      bio: "Bio coming soon.",
+      funFact: "Fun fact coming soon.",
     },
   ];
 
@@ -50,6 +50,15 @@ const Officers = () => {
 
   // Data for past officers, organized by year
   const pastOfficerYears = [
+    {
+        year: "2025-2026",
+        officers: [
+            { role: "President", name: "Pranshu Sharma & Saanvi Kotha" },
+            { role: "Vice President", name: "Yash Pattekar" },
+            { role: "Treasurer", name: "Alivia Cui" },
+            { role: "Secretary", name: "Andy Xing" },
+        ]
+    },
     {
         year: "2024-2025",
         officers: [
@@ -190,7 +199,7 @@ const Officers = () => {
 
       {/* Current Officers Grid */}
       <section>
-        <h2 className="text-3xl font-semibold text-foreground mb-8 pb-2 border-b">Current Officers (2025-2026)</h2>
+        <h2 className="text-3xl font-semibold text-foreground mb-8 pb-2 border-b">Current Officers (2026-2027)</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {officers.map((officer, index) => (
             <Card key={index} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
