@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,25 +14,49 @@ import 'katex/dist/katex.min.css';
 // in case you add a Latex problem back later.
 import Latex from "react-latex-next"; 
 
+const ANIMATION_STORAGE_KEY = "evhs-math-club-animation-disabled";
+
 /**
  * Lightweight, self-contained Matter.js canvas used in the hero's animation area.
  * - no SSR assumptions (dynamic import of matter-js)
  * - crisp on HiDPI
  * - responsive to container size
  * - mouse/touch drag enabled
+ * - cursor repulsion effect
+ * - tap/click explosion effect
+ * - freeze mode: when disabled, physics stops but visuals remain
  */
-function PhysicsAnimation() {
-  const mountRef = useRef(null);
+function PhysicsAnimation({ disabled }: { disabled: boolean }) {
+  const mountRef = useRef<HTMLDivElement>(null);
+  const disabledRef = useRef(disabled);
+  const runnerRef = useRef<any>(null);
+  const timerRef = useRef<number | null>(null);
+
+  // Keep the ref in sync with prop
+  useEffect(() => {
+    disabledRef.current = disabled;
+    
+    // Pause or resume the runner based on disabled state
+    if (runnerRef.current) {
+      runnerRef.current.enabled = !disabled;
+    }
+  }, [disabled]);
 
   useEffect(() => {
-    let engine, render, runner;
-    let walls = [];
-    let ramps = [];
+    let engine: any, render: any;
+    let walls: any[] = [];
+    let ramps: any[] = [];
+    let allBalls: any[] = [];
     let destroyed = false;
+    
+    // Track mouse/touch position for repulsion
+    let mousePos = { x: -1000, y: -1000 };
+    const REPULSION_RADIUS = 100;
+    const REPULSION_STRENGTH = 0.008;
 
     const setup = async () => {
       const Matter = await import("matter-js");
-      const { Engine, Render, Runner, Bodies, Body, Composite, World } = Matter;
+      const { Engine, Render, Runner, Bodies, Body, World, Events } = Matter;
 
       if (!mountRef.current) return;
       const container = mountRef.current;
@@ -53,24 +77,25 @@ function PhysicsAnimation() {
       });
 
       const COLORS = ["#f97316", "#f59e0b", "#fbbf24", "#fde68a", "#0f2940"];
-      const rand = (min, max) => Math.random() * (max - min) + min;
-      const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+      const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
 
-      const makeBall = (x, y) =>
-        Bodies.circle(x, y, rand(8, 18), {
+      const makeBall = (x: number, y: number) => {
+        const ball = Bodies.circle(x, y, rand(8, 18), {
           restitution: 0.45,
           friction: 0.001,
-          frictionAir: 0,
+          frictionAir: 0.01,
           render: {
             fillStyle: pick(COLORS),
             strokeStyle: "rgba(0,0,0,0.06)",
             lineWidth: 1,
           },
         });
+        allBalls.push(ball);
+        return ball;
+      };
 
-      const mkWalls = (W, H) => {
-        const thick = 80;
-        const opts = { isStatic: true, render: { visible: false } };
+      const mkWalls = (W: number, H: number) => {
         walls = [];
         World.add(engine.world, walls);
       };
@@ -85,7 +110,7 @@ function PhysicsAnimation() {
         },
       };
 
-      const mkRamps = (W, H) => {
+      const mkRamps = (W: number, H: number) => {
         const a1 = -0.2;
         const a2 = +0.17;
         const a3 = -0.26;
@@ -120,13 +145,117 @@ function PhysicsAnimation() {
 
       balls.forEach((b) => Body.setAngularVelocity(b, rand(-0.05, 0.05)));
 
-      let spawned = 0;
-      const timer = window.setInterval(() => {
-        if (destroyed || spawned > 40) return window.clearInterval(timer);
-        const b = makeBall(rand(W * 0.9, W * 0.22), -30);
-        World.add(engine.world, b);
-        spawned += 1;
+      // Infinite ball spawning - remove balls that fall off screen and spawn new ones
+      const MAX_BALLS = 50;
+      timerRef.current = window.setInterval(() => {
+        if (destroyed || disabledRef.current) return;
+        
+        // Remove balls that have fallen off the bottom
+        const toRemove = allBalls.filter((ball) => ball.position.y > H + 100);
+        toRemove.forEach((ball) => {
+          World.remove(engine.world, ball);
+          const idx = allBalls.indexOf(ball);
+          if (idx > -1) allBalls.splice(idx, 1);
+        });
+        
+        // Spawn new balls if under the limit
+        if (allBalls.length < MAX_BALLS) {
+          const b = makeBall(rand(W * 0.9, W * 0.22), -30);
+          World.add(engine.world, b);
+        }
       }, 700);
+
+      // Cursor repulsion effect - applied every physics tick
+      Events.on(engine, "beforeUpdate", () => {
+        if (disabledRef.current || mousePos.x < 0) return;
+        
+        allBalls.forEach((ball) => {
+          const dx = ball.position.x - mousePos.x;
+          const dy = ball.position.y - mousePos.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < REPULSION_RADIUS && distance > 0) {
+            const force = (REPULSION_RADIUS - distance) / REPULSION_RADIUS * REPULSION_STRENGTH;
+            const fx = (dx / distance) * force;
+            const fy = (dy / distance) * force;
+            Body.applyForce(ball, ball.position, { x: fx, y: fy });
+          }
+        });
+      });
+
+      // Explosion effect on click/tap
+      const triggerExplosion = (x: number, y: number) => {
+        if (disabledRef.current) return;
+        
+        const EXPLOSION_RADIUS = 150;
+        const EXPLOSION_STRENGTH = 0.15;
+        
+        allBalls.forEach((ball) => {
+          const dx = ball.position.x - x;
+          const dy = ball.position.y - y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < EXPLOSION_RADIUS && distance > 0) {
+            const force = (EXPLOSION_RADIUS - distance) / EXPLOSION_RADIUS * EXPLOSION_STRENGTH;
+            const fx = (dx / distance) * force;
+            const fy = (dy / distance) * force;
+            Body.applyForce(ball, ball.position, { x: fx, y: fy });
+          }
+        });
+      };
+
+      // Mouse/touch event handlers
+      const getCanvasCoords = (clientX: number, clientY: number) => {
+        if (!render.canvas) return { x: -1000, y: -1000 };
+        const canvasRect = render.canvas.getBoundingClientRect();
+        return {
+          x: clientX - canvasRect.left,
+          y: clientY - canvasRect.top,
+        };
+      };
+
+      const handleMouseMove = (e: MouseEvent) => {
+        if (disabledRef.current) return;
+        mousePos = getCanvasCoords(e.clientX, e.clientY);
+      };
+
+      const handleMouseLeave = () => {
+        mousePos = { x: -1000, y: -1000 };
+      };
+
+      const handleClick = (e: MouseEvent) => {
+        if (disabledRef.current) return;
+        const coords = getCanvasCoords(e.clientX, e.clientY);
+        triggerExplosion(coords.x, coords.y);
+      };
+
+      const handleTouchMove = (e: TouchEvent) => {
+        if (disabledRef.current) return;
+        if (e.touches.length > 0) {
+          mousePos = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      };
+
+      const handleTouchEnd = () => {
+        mousePos = { x: -1000, y: -1000 };
+      };
+
+      const handleTouchStart = (e: TouchEvent) => {
+        if (disabledRef.current) return;
+        if (e.touches.length > 0) {
+          const coords = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+          mousePos = coords;
+          triggerExplosion(coords.x, coords.y);
+        }
+      };
+
+      // Attach event listeners to the canvas
+      render.canvas.addEventListener("mousemove", handleMouseMove);
+      render.canvas.addEventListener("mouseleave", handleMouseLeave);
+      render.canvas.addEventListener("click", handleClick);
+      render.canvas.addEventListener("touchmove", handleTouchMove, { passive: true });
+      render.canvas.addEventListener("touchend", handleTouchEnd);
+      render.canvas.addEventListener("touchstart", handleTouchStart, { passive: true });
 
       const resize = () => {
         if (!mountRef.current) return;
@@ -151,12 +280,21 @@ function PhysicsAnimation() {
       window.addEventListener("resize", resize);
 
       Render.run(render);
-      runner = Runner.create();
+      const runner = Runner.create();
+      runnerRef.current = runner;
+      // Set initial enabled state based on current disabled prop
+      runner.enabled = !disabledRef.current;
       Runner.run(runner, engine);
 
       return () => {
         window.removeEventListener("resize", resize);
-        window.clearInterval(timer);
+        if (timerRef.current) window.clearInterval(timerRef.current);
+        render.canvas.removeEventListener("mousemove", handleMouseMove);
+        render.canvas.removeEventListener("mouseleave", handleMouseLeave);
+        render.canvas.removeEventListener("click", handleClick);
+        render.canvas.removeEventListener("touchmove", handleTouchMove);
+        render.canvas.removeEventListener("touchend", handleTouchEnd);
+        render.canvas.removeEventListener("touchstart", handleTouchStart);
         try {
           Runner.stop(runner);
           Render.stop(render);
@@ -167,7 +305,7 @@ function PhysicsAnimation() {
       };
     };
 
-    let cleanup;
+    let cleanup: (() => void) | undefined;
     (async () => (cleanup = await setup()))();
 
     return () => {
@@ -177,11 +315,24 @@ function PhysicsAnimation() {
   }, []);
 
   return (
-    <div ref={mountRef} className="relative w-full h-[420px] lg:h-[520px]" />
+    <div ref={mountRef} className="relative w-full h-[420px] lg:h-[520px] cursor-pointer" />
   );
 }
 
 const Home = () => {
+  const [animationDisabled, setAnimationDisabled] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(ANIMATION_STORAGE_KEY) === "true";
+    }
+    return false;
+  });
+
+  const toggleAnimation = () => {
+    const newValue = !animationDisabled;
+    setAnimationDisabled(newValue);
+    localStorage.setItem(ANIMATION_STORAGE_KEY, String(newValue));
+  };
+
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -259,7 +410,18 @@ const Home = () => {
               className="hidden lg:block lg:order-last animate-slide-up"
               style={{ animationDelay: "0.2s" }}
             >
-              <PhysicsAnimation />
+              <div className="relative">
+                <PhysicsAnimation disabled={animationDisabled} />
+                <label className="absolute bottom-2 right-2 flex items-center gap-2 text-xs text-muted-foreground/70 hover:text-muted-foreground cursor-pointer select-none bg-background/50 backdrop-blur-sm rounded px-2 py-1">
+                  <input
+                    type="checkbox"
+                    checked={animationDisabled}
+                    onChange={toggleAnimation}
+                    className="w-3 h-3 accent-primary"
+                  />
+                  Disable animation
+                </label>
+              </div>
             </div>
           </div>
         </div>
