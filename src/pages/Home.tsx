@@ -456,7 +456,7 @@ const Home = () => {
 
             {/* Animation Area w/ Matter.js */}
             <div
-              className="hidden lg:block lg:order-last animate-slide-up"
+              className="lg:order-last animate-slide-up"
               style={{ animationDelay: "0.2s" }}
             >
               <div className="relative">
