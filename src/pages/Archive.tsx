@@ -17,8 +17,8 @@ const Archive = () => {
     {
       year: "2025",
       divisions: [
-        { name: "Division 1", problemsLink: "https://placeholder.example.com/evmt-2025-div1-problems", solutionsLink: "https://placeholder.example.com/evmt-2025-div1-solutions" },
-        { name: "Division 2", problemsLink: "https://placeholder.example.com/evmt-2025-div2-problems", solutionsLink: "https://placeholder.example.com/evmt-2025-div2-solutions" },
+        { name: "Division 1", problemsLink: "https://drive.google.com/file/d/1EnWzg3ohjqSdbLARt-E4L8k1KkSCD7XU/view?usp=sharing", solutionsLink: "https://drive.google.com/file/d/1lI3Y9DQoAAaOWPNiUMsWTWzQ9bkb5NlT/view?usp=sharing" },
+        { name: "Division 2", problemsLink: "https://drive.google.com/file/d/1189kmQGVFolOcFgds3-ZH-pi09tITnxg/view?usp=sharing", solutionsLink: "https://drive.google.com/file/d/1pKbTKzonxU29cgb8NvY0y5AOzlBW_5yd/view?usp=sharing" },
       ]
     },
     {
