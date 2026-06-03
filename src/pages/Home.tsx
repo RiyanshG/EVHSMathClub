@@ -24,14 +24,26 @@ const ANIMATION_STORAGE_KEY = "evhs-math-club-animation-disabled";
  * - mouse/touch drag enabled
  * - cursor repulsion effect
  * - tap/click explosion effect
+ * - freeze mode: when disabled, physics stops but visuals remain
  */
 function PhysicsAnimation({ disabled }: { disabled: boolean }) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const disabledRef = useRef(disabled);
+  const runnerRef = useRef<any>(null);
+  const timerRef = useRef<number | null>(null);
+
+  // Keep the ref in sync with prop
+  useEffect(() => {
+    disabledRef.current = disabled;
+    
+    // Pause or resume the runner based on disabled state
+    if (runnerRef.current) {
+      runnerRef.current.enabled = !disabled;
+    }
+  }, [disabled]);
 
   useEffect(() => {
-    if (disabled) return;
-
-    let engine: any, render: any, runner: any;
+    let engine: any, render: any;
     let walls: any[] = [];
     let ramps: any[] = [];
     let allBalls: any[] = [];
@@ -44,7 +56,7 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
 
     const setup = async () => {
       const Matter = await import("matter-js");
-      const { Engine, Render, Runner, Bodies, Body, Composite, World, Events } = Matter;
+      const { Engine, Render, Runner, Bodies, Body, World, Events } = Matter;
 
       if (!mountRef.current) return;
       const container = mountRef.current;
@@ -135,8 +147,8 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
 
       // Infinite ball spawning - remove balls that fall off screen and spawn new ones
       const MAX_BALLS = 50;
-      const timer = window.setInterval(() => {
-        if (destroyed) return;
+      timerRef.current = window.setInterval(() => {
+        if (destroyed || disabledRef.current) return;
         
         // Remove balls that have fallen off the bottom
         const toRemove = allBalls.filter((ball) => ball.position.y > H + 100);
@@ -155,7 +167,7 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
 
       // Cursor repulsion effect - applied every physics tick
       Events.on(engine, "beforeUpdate", () => {
-        if (mousePos.x < 0) return;
+        if (disabledRef.current || mousePos.x < 0) return;
         
         allBalls.forEach((ball) => {
           const dx = ball.position.x - mousePos.x;
@@ -173,6 +185,8 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
 
       // Explosion effect on click/tap
       const triggerExplosion = (x: number, y: number) => {
+        if (disabledRef.current) return;
+        
         const EXPLOSION_RADIUS = 150;
         const EXPLOSION_STRENGTH = 0.15;
         
@@ -201,6 +215,7 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
       };
 
       const handleMouseMove = (e: MouseEvent) => {
+        if (disabledRef.current) return;
         mousePos = getCanvasCoords(e.clientX, e.clientY);
       };
 
@@ -209,11 +224,13 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
       };
 
       const handleClick = (e: MouseEvent) => {
+        if (disabledRef.current) return;
         const coords = getCanvasCoords(e.clientX, e.clientY);
         triggerExplosion(coords.x, coords.y);
       };
 
       const handleTouchMove = (e: TouchEvent) => {
+        if (disabledRef.current) return;
         if (e.touches.length > 0) {
           mousePos = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
         }
@@ -224,6 +241,7 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
       };
 
       const handleTouchStart = (e: TouchEvent) => {
+        if (disabledRef.current) return;
         if (e.touches.length > 0) {
           const coords = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
           mousePos = coords;
@@ -262,12 +280,15 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
       window.addEventListener("resize", resize);
 
       Render.run(render);
-      runner = Runner.create();
+      const runner = Runner.create();
+      runnerRef.current = runner;
+      // Set initial enabled state based on current disabled prop
+      runner.enabled = !disabledRef.current;
       Runner.run(runner, engine);
 
       return () => {
         window.removeEventListener("resize", resize);
-        window.clearInterval(timer);
+        if (timerRef.current) window.clearInterval(timerRef.current);
         render.canvas.removeEventListener("mousemove", handleMouseMove);
         render.canvas.removeEventListener("mouseleave", handleMouseLeave);
         render.canvas.removeEventListener("click", handleClick);
@@ -291,41 +312,7 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
       destroyed = true;
       if (cleanup) cleanup();
     };
-  }, [disabled]);
-
-  if (disabled) {
-    // Show static white lines (ramps) when animation is disabled
-    return (
-      <div className="relative w-full h-[420px] lg:h-[520px]">
-        <svg className="w-full h-full" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid meet">
-          {/* Ramp 1 - top right */}
-          <line 
-            x1="164" y1="130" 
-            x2="364" y2="90" 
-            stroke="#ffffff" 
-            strokeWidth="3" 
-            strokeLinecap="round"
-          />
-          {/* Ramp 2 - middle left */}
-          <line 
-            x1="16" y1="266" 
-            x2="240" y2="305" 
-            stroke="#ffffff" 
-            strokeWidth="3" 
-            strokeLinecap="round"
-          />
-          {/* Ramp 3 - bottom */}
-          <line 
-            x1="76" y1="490" 
-            x2="404" y2="400" 
-            stroke="#ffffff" 
-            strokeWidth="3" 
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
-    );
-  }
+  }, []);
 
   return (
     <div ref={mountRef} className="relative w-full h-[420px] lg:h-[520px] cursor-pointer" />
