@@ -36,8 +36,8 @@ import { CalendarDays, ExternalLink } from "lucide-react";
  * ============================================================================
  */
 
-// Replace this with your actual Google Calendar ID
-const CALENDAR_ID = "YOUR_CALENDAR_ID_HERE";
+// EVHS Math Club Google Calendar ID
+const CALENDAR_ID = "mathclub.evhs@gmail.com";
 
 // Customize the calendar appearance
 const CALENDAR_CONFIG = {
