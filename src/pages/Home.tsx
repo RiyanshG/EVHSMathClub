@@ -133,12 +133,24 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
 
       balls.forEach((b) => Body.setAngularVelocity(b, rand(-0.05, 0.05)));
 
-      let spawned = 0;
+      // Infinite ball spawning - remove balls that fall off screen and spawn new ones
+      const MAX_BALLS = 50;
       const timer = window.setInterval(() => {
-        if (destroyed || spawned > 40) return window.clearInterval(timer);
-        const b = makeBall(rand(W * 0.9, W * 0.22), -30);
-        World.add(engine.world, b);
-        spawned += 1;
+        if (destroyed) return;
+        
+        // Remove balls that have fallen off the bottom
+        const toRemove = allBalls.filter((ball) => ball.position.y > H + 100);
+        toRemove.forEach((ball) => {
+          World.remove(engine.world, ball);
+          const idx = allBalls.indexOf(ball);
+          if (idx > -1) allBalls.splice(idx, 1);
+        });
+        
+        // Spawn new balls if under the limit
+        if (allBalls.length < MAX_BALLS) {
+          const b = makeBall(rand(W * 0.9, W * 0.22), -30);
+          World.add(engine.world, b);
+        }
       }, 700);
 
       // Cursor repulsion effect - applied every physics tick
@@ -282,9 +294,35 @@ function PhysicsAnimation({ disabled }: { disabled: boolean }) {
   }, [disabled]);
 
   if (disabled) {
+    // Show static white lines (ramps) when animation is disabled
     return (
-      <div className="relative w-full h-[420px] lg:h-[520px] flex items-center justify-center">
-        <div className="text-muted-foreground/50 text-sm">Animation disabled</div>
+      <div className="relative w-full h-[420px] lg:h-[520px]">
+        <svg className="w-full h-full" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid meet">
+          {/* Ramp 1 - top right */}
+          <line 
+            x1="164" y1="130" 
+            x2="364" y2="90" 
+            stroke="#ffffff" 
+            strokeWidth="3" 
+            strokeLinecap="round"
+          />
+          {/* Ramp 2 - middle left */}
+          <line 
+            x1="16" y1="266" 
+            x2="240" y2="305" 
+            stroke="#ffffff" 
+            strokeWidth="3" 
+            strokeLinecap="round"
+          />
+          {/* Ramp 3 - bottom */}
+          <line 
+            x1="76" y1="490" 
+            x2="404" y2="400" 
+            stroke="#ffffff" 
+            strokeWidth="3" 
+            strokeLinecap="round"
+          />
+        </svg>
       </div>
     );
   }
